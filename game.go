@@ -33,3 +33,11 @@ func IsValidNumPlayers(num int) bool {
 
 	return isValid
 }
+
+func NamePlayer(index int, name string, playerList []Player) {
+	playerList[index].name = name
+}
+
+func PlayGame() {
+
+}

@@ -28,10 +28,26 @@ func main() {
 	// Print Farkle rules
 	PrintRules()
 
-	// Get the number of players
-	numberOfPlayers := getNumPlayers()
+	// Initialize array of default players
+	playerList := []Player{
+		Player{1, "Adam", 0},
+		Player{2, "Bob", 0},
+		Player{3, "Chris", 0},
+		Player{4, "Dave", 0},
+	}
 
-	// FIXME: Import Game() func
-	fmt.Println(numberOfPlayers)
+	// Get the number of players
+	numPlayers := getNumPlayers()
+
+	// name the players
+	for i := 0; i < numPlayers; i++ {
+		//Get name of player from user
+		name := ""
+		fmt.Printf("What is the name of Player %d : \n", i+1)
+		fmt.Scan(&name)
+
+		// Change player name
+		NamePlayer(i, name, playerList)
+	}
 
 }

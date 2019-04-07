@@ -22,3 +22,21 @@ func TestIsValidNumPlayers(t *testing.T) {
 		}
 	}
 }
+
+func TestNamePlayer(t *testing.T) {
+	name := "Bilbo"
+	index := 0
+	playerList := []Player{
+		Player{1, "Tom", 0},
+		Player{2, "Bill", 0},
+	}
+
+	NamePlayer(index, name, playerList)
+
+	got := playerList[index+1].name
+	want := "Bill"
+
+	if got != want {
+		t.Errorf("got %s want %s", got, want)
+	}
+}
