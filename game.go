@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 )
 
 func getNumPlayers() int {
@@ -10,23 +9,27 @@ func getNumPlayers() int {
 	numPlayers := 0
 
 	fmt.Println("How many players are in this game? Choose a number between 2 & 4 : ")
-	_, err := fmt.Scanf("&d", &numPlayers)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Scan(&numPlayers)
 
 	//check for valid choice
-	for numPlayers < 2 && numPlayers > 4 {
-		fmt.Println("Invalid choice. You must choose a number between 2 & 4 : ")
-		_, err := fmt.Scanf("&d", &numPlayers)
-		if err != nil {
-			log.Fatal(err)
-		}
+	for !IsValidNumPlayers(numPlayers) {
+		fmt.Println("Invalid choice.")
+		numPlayers = getNumPlayers()
 	}
 
 	return numPlayers
 }
 
-func isValidNumPlayers() {
+func IsValidNumPlayers(num int) bool {
+	isValid := true
 
+	if num < 2 {
+		isValid = false
+	}
+
+	if num > 4 {
+		isValid = false
+	}
+
+	return isValid
 }

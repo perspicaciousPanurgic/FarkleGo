@@ -1,3 +1,4 @@
+//go main()
 package main
 
 import (
@@ -10,7 +11,7 @@ func Greetings() string {
 }
 
 func PrintRules() {
-	file, err := ioutil.ReadFile("farkleRules.txt")
+	file, err := ioutil.ReadFile("FarkleRules.txt")
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -27,7 +28,10 @@ func main() {
 	// Print Farkle rules
 	PrintRules()
 
-	// Play the game
+	// Get the number of players
+	numberOfPlayers := getNumPlayers()
+
 	// FIXME: Import Game() func
+	fmt.Println(numberOfPlayers)
 
 }

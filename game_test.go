@@ -2,11 +2,23 @@ package main
 
 import "testing"
 
-func TestisValidNumPlayers(bool, t *testing.T) {
-	got := isValidNumPlayers(5)
-	want := false
+func TestIsValidNumPlayers(t *testing.T) {
 
-	if got != false {
-		t.Errorf("got %d want %d given 5", got, want)
+	isValidTests := []struct {
+		num  int
+		want bool
+	}{
+		{1, false},
+		{2, true},
+		{3, true},
+		{4, true},
+		{5, false},
+	}
+
+	for _, tt := range isValidTests {
+		got := IsValidNumPlayers(tt.num)
+		if got != tt.want {
+			t.Errorf("got %t want %t given %d", got, tt.want, tt.num)
+		}
 	}
 }
