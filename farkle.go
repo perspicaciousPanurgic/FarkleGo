@@ -36,8 +36,11 @@ func main() {
 		Player{4, "Dave", 0},
 	}
 
+	// Initialize global game variables
+	activePlayer := -1
+
 	// Get the number of players
-	numPlayers := getNumPlayers()
+	numPlayers := GetNumPlayers()
 
 	// name the players
 	for i := 0; i < numPlayers; i++ {
@@ -50,4 +53,20 @@ func main() {
 		NamePlayer(i, name, playerList)
 	}
 
+	// State who is the active player
+	activePlayer = NextActivePlayer(activePlayer, numPlayers)
+	fmt.Printf("\nThe active player is Player %d : %v\n", activePlayer+1, playerList[activePlayer].name)
+
+	// Initialize Dice Arrays
+	activeDice := [6]int{}
+	heldDice := [6]int{}
+
+	// Roll Dice
+	activeDice = Roll(activeDice, 6)
+
+	// Print Dice
+	PrintActiveDice(activeDice)
+	PrintHeldDice(heldDice)
+
+	// Find points
 }

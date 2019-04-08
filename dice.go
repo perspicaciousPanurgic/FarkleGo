@@ -1,7 +1,10 @@
 package main
 
-import "math/rand"
-import "time"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 //Roll to generate random numbers between 1-6
 func Roll(dice [6]int, numDice int) [6]int {
@@ -22,4 +25,31 @@ func Roll(dice [6]int, numDice int) [6]int {
 	}
 
 	return dice
+}
+
+// Returns [6]int array which contains the number of times each value occurs given a dice roll
+func CountDice(dice [6]int) [6]int {
+	// Initialize new array to store dice count
+	count := [6]int{}
+
+	// Iterate through dice roll and count number of time each value occurs
+	for i := 0; i < 6; i++ {
+		num := 0
+		for j := 0; j < 6; j++ {
+			if dice[j] == (i + 1) {
+				num++
+			}
+		}
+		count[i] = num
+	}
+
+	return count
+}
+
+func PrintActiveDice(dice [6]int) {
+	fmt.Printf("Dice Roll : %v\n", dice)
+}
+
+func PrintHeldDice(dice [6]int) {
+	fmt.Printf("Held Dice : %v\n", dice)
 }

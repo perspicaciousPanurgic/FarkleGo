@@ -2,6 +2,16 @@ package main
 
 import "testing"
 
+func TestNextActivePlayer(t *testing.T) {
+	currentPlayer := 1
+	numPlayers := 2
+	got := NextActivePlayer(currentPlayer, numPlayers)
+	want := 0
+
+	if got != want {
+		t.Errorf("got %d want %d", got, want)
+	}
+}
 func TestIsValidNumPlayers(t *testing.T) {
 
 	isValidTests := []struct {
@@ -38,5 +48,16 @@ func TestNamePlayer(t *testing.T) {
 
 	if got != want {
 		t.Errorf("got %s want %s", got, want)
+	}
+}
+
+func TestFindPoints(t *testing.T) {
+	diceRoll := [6]int{1, 1, 2, 2, 3, 4}
+
+	got := FindPoints(diceRoll)
+	want := 200
+
+	if got != want {
+		t.Errorf("got %d want %d given %v", got, want, diceRoll)
 	}
 }

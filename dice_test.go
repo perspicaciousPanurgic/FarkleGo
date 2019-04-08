@@ -45,3 +45,22 @@ func TestRoll(t *testing.T) {
 		}
 	})
 }
+
+func TestCountDice(t *testing.T) {
+	isCountValid := []struct {
+		dice  [6]int
+		count [6]int
+	}{
+		{[6]int{1, 2, 3, 4, 5, 6}, [6]int{1, 1, 1, 1, 1, 1}},
+		{[6]int{6, 5, 4, 3, 2, 1}, [6]int{1, 1, 1, 1, 1, 1}},
+		{[6]int{1, 1, 1, 1, 1, 1}, [6]int{6, 0, 0, 0, 0, 0}},
+		{[6]int{6, 6, 6, 6, 6, 6}, [6]int{0, 0, 0, 0, 0, 6}},
+	}
+
+	for _, tt := range isCountValid {
+		got := CountDice(tt.dice)
+		if got != tt.count {
+			t.Errorf("got %v want %v given %v", got, tt.count, tt.dice)
+		}
+	}
+}
