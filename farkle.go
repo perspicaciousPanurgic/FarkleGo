@@ -69,4 +69,6 @@ func main() {
 	PrintHeldDice(heldDice)
 
 	// Find points
+	points := FindPoints(activeDice)
+	fmt.Printf("The dice roll is worth %d points.", points)
 }

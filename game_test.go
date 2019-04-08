@@ -52,12 +52,27 @@ func TestNamePlayer(t *testing.T) {
 }
 
 func TestFindPoints(t *testing.T) {
-	diceRoll := [6]int{1, 1, 2, 2, 3, 4}
+	pointsValidTests := []struct {
+		dice [6]int
+		want int
+	}{
+		{[6]int{1, 2, 5, 2, 3, 4}, 150},
+		{[6]int{1, 1, 1, 2, 3, 4}, 1000},
+		{[6]int{1, 1, 1, 1, 3, 4}, 1100},
+		{[6]int{1, 1, 1, 1, 1, 1}, 2000},
+		{[6]int{5, 2, 3, 4, 6, 6}, 50},
+		{[6]int{5, 5, 5, 4, 6, 6}, 500},
+		{[6]int{5, 5, 5, 5, 5, 5}, 1000},
+		{[6]int{2, 2, 2, 3, 3, 4}, 200},
+		{[6]int{2, 2, 2, 3, 3, 3}, 500},
+		{[6]int{4, 4, 4, 6, 6, 6}, 1000},
+		{[6]int{2, 2, 2, 2, 2, 2}, 400},
+	}
 
-	got := FindPoints(diceRoll)
-	want := 200
-
-	if got != want {
-		t.Errorf("got %d want %d given %v", got, want, diceRoll)
+	for _, tt := range pointsValidTests {
+		got := FindPoints(tt.dice)
+		if got != tt.want {
+			t.Errorf("got %d want %d given %v", got, tt.want, tt.dice)
+		}
 	}
 }

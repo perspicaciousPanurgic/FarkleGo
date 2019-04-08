@@ -21,7 +21,55 @@ func NextActivePlayer(currentPlayer int, numPlayers int) int {
 }
 
 func FindPoints(dice [6]int) int {
+	// Initialize return value
 	points := 0
+
+	// Count number of times each value is rolled
+	diceCount := CountDice(dice)
+
+	// Check for 1's
+	if diceCount[0] != 0 {
+		num := diceCount[0]
+		for num != 0 {
+			if num > 2 {
+				points += 1000
+				num -= 3
+				continue
+			}
+			points += num * 100
+			num = 0
+		}
+	}
+
+	// Check for 5's
+	if diceCount[4] != 0 {
+		num := diceCount[4]
+		for num != 0 {
+			if num > 2 {
+				points += 500
+				num -= 3
+				continue
+			}
+			points += num * 50
+			num = 0
+		}
+	}
+
+	// Check for remaining 3 of a kind
+	values := [...]int{1, 2, 3, 5}
+	for _, value := range values {
+		if diceCount[value] != 0 {
+			num := diceCount[value]
+			for num != 0 {
+				if num > 2 {
+					points += 100 * (value + 1)
+					num -= 3
+					continue
+				}
+				num = 0
+			}
+		}
+	}
 
 	return points
 }
