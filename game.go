@@ -159,22 +159,34 @@ func FindPoints(dice [6]int) rollResult {
 
 // Method to determine if a players turn is over
 func EndRound(points int, numDice int, score int) bool {
-	farkle := false
+	farkle := true
 
 	// If no points were rolled then the round is over
 	if points == 0 {
-		farkle = true
-		return farkle
-	}
-
-	// If < 1000 points rolled and score is < 1000  round is not over
-	if points < 1000 && score < 1000 {
 		return farkle
 	}
 
 	// If all six dice have scored points then player must roll again
 	if numDice == 6 {
+		farkle = false
 		return farkle
+	}
+
+	// If player score is less than 1000 and they have not rolled 1000 points they must roll again
+	if score < 1000 {
+		if points < 1000 {
+			farkle = false
+			return farkle
+		}
+	}
+
+	// Ask if player wants to keep points and end turn
+	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", points, MaxDice-numDice)
+	choice := ConvertBinaryChoice(GetBinaryChoice())
+
+	// If player chooses to roll
+	if choice == false {
+		farkle = false
 	}
 
 	return farkle

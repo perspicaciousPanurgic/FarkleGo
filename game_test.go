@@ -113,8 +113,13 @@ func TestEndRound(t *testing.T) {
 		{200, 2, 0, false},
 		{800, 4, 0, false},
 		{0, 2, 1000, true},
-		{1000, 2, 0, false},
+		{800, 2, 0, false},
+		{1000, 2, 0, true},
+		{1000, 6, 0, false},
+		{400, 3, 1000, true},
+		{400, 6, 1000, false},
 		{0, 6, 0, true},
+		{100, 6, 0, false},
 	}
 
 	for _, tt := range roundTest {

@@ -60,6 +60,7 @@ func main() {
 	// Initialize Dice Array & eligible dice to roll
 	activeDice := [6]int{}
 	numDice := MaxDice
+	//farkle := false
 
 	// State who is the active player
 	activePlayer = NextActivePlayer(activePlayer, numPlayers)
