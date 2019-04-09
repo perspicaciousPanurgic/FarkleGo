@@ -103,27 +103,30 @@ func TestKeepPoints(t *testing.T) {
 }
 
 func TestEndRound(t *testing.T) {
+	testPlayer := Player{1, "Tom", 0}
+
 	roundTest := []struct {
 		points  int
 		numDice int
 		score   int
 		farkle  bool
+		player  *Player
 	}{
-		{0, 0, 0, true},
-		{200, 2, 0, false},
-		{800, 4, 0, false},
-		{0, 2, 1000, true},
-		{800, 2, 0, false},
-		{1000, 2, 0, true},
-		{1000, 6, 0, false},
-		{400, 3, 1000, true},
-		{400, 6, 1000, false},
-		{0, 6, 0, true},
-		{100, 6, 0, false},
+		{0, 0, 0, true, &testPlayer},
+		{200, 2, 0, false, &testPlayer},
+		{800, 4, 0, false, &testPlayer},
+		{0, 2, 1000, true, &testPlayer},
+		{800, 2, 0, false, &testPlayer},
+		{1000, 2, 0, true, &testPlayer},
+		{1000, 6, 0, false, &testPlayer},
+		{400, 3, 1000, true, &testPlayer},
+		{400, 6, 1000, false, &testPlayer},
+		{0, 6, 0, true, &testPlayer},
+		{100, 6, 0, false, &testPlayer},
 	}
 
 	for _, tt := range roundTest {
-		farkle := EndRound(tt.points, tt.numDice, tt.score)
+		farkle := EndRound(tt.points, tt.numDice, tt.score, tt.player)
 		if farkle != tt.farkle {
 			t.Errorf("got %t want %t given %d points, %d dice used and %d score", farkle, tt.farkle, tt.points, tt.numDice, tt.score)
 		}

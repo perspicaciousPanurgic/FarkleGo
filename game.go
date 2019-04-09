@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+//Global constants
+const MaxDice = 6
+const PointsToWin = 2000
+
 // Method to solicit Y or N from user
 func GetBinaryChoice() string {
 	userInput := "Y"
@@ -157,41 +161,6 @@ func FindPoints(dice [6]int) rollResult {
 	return result
 }
 
-// Method to determine if a players turn is over
-func EndRound(points int, numDice int, score int) bool {
-	farkle := true
-
-	// If no points were rolled then the round is over
-	if points == 0 {
-		return farkle
-	}
-
-	// If all six dice have scored points then player must roll again
-	if numDice == 6 {
-		farkle = false
-		return farkle
-	}
-
-	// If player score is less than 1000 and they have not rolled 1000 points they must roll again
-	if score < 1000 {
-		if points < 1000 {
-			farkle = false
-			return farkle
-		}
-	}
-
-	// Ask if player wants to keep points and end turn
-	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", points, MaxDice-numDice)
-	choice := ConvertBinaryChoice(GetBinaryChoice())
-
-	// If player chooses to roll
-	if choice == false {
-		farkle = false
-	}
-
-	return farkle
-}
-
 // Method to solicit user input on how many players there will be
 func GetNumPlayers() int {
 	//Get number of players from user
@@ -229,10 +198,108 @@ func NamePlayer(index int, name string, playerList []Player) {
 	playerList[index].name = name
 }
 
-func PlayRound() {
+func SetupGame(numPlayers int) []Player {
+	// Initialize array of players
+	playerList := []Player{
+		Player{1, "Adam", 0},
+		Player{2, "Bob", 0},
+		Player{3, "Chris", 0},
+		Player{4, "Dave", 0},
+	}
 
+	// name the players
+	for i := 0; i < numPlayers; i++ {
+		//Get name of player from user
+		name := ""
+		fmt.Printf("What is the name of Player %d : \n", i+1)
+		fmt.Scan(&name)
+
+		// Change player name
+		NamePlayer(i, name, playerList)
+	}
+
+	return playerList
 }
 
 func PlayGame() {
+
+	// Setup the Game
+	numPlayers := GetNumPlayers()
+	playerList := SetupGame(numPlayers)
+	activePlayer := -1
+
+	// Initialize Dice Array & eligible dice to roll
+	activeDice := [6]int{}
+	numDice := MaxDice
+
+	// State who is the active player
+	activePlayer = NextActivePlayer(activePlayer, numPlayers)
+	fmt.Printf("\nThe active player is Player %d : %v\n", activePlayer+1, playerList[activePlayer].name)
+
+	// Round loop
+	farkle := false
+	for farkle == false {
+		// Roll Dice
+		activeDice = Roll(activeDice, numDice)
+
+		// Print Dice
+		PrintActiveDice(activeDice)
+
+		// Find points
+		result := FindPoints(activeDice)
+
+		// Print results
+		//fmt.Printf("%v now has %d points.", playerList[activePlayer].name, playerList[activePlayer].score)
+		//fmt.Printf("%d dice may be rolled again.", MaxDice-result.numDice)
+
+		// End of round evaluation to determine if round is over
+		farkle = EndRound(result.points, result.numDice, playerList[activePlayer].score, &playerList[activePlayer])
+
+		// Determine dice to roll
+		if result.numDice != 6 {
+			numDice = numDice - result.numDice
+		}
+	}
+}
+
+// Method to determine if a players turn is over
+func EndRound(points int, numDice int, score int, player *Player) bool {
+	farkle := true
+
+	// If no points were rolled then the round is over
+	if points == 0 {
+		return farkle
+	}
+
+	// If all six dice have scored points then player must roll again
+	if numDice == 6 {
+		farkle = false
+		return farkle
+	}
+
+	// If player score is less than 1000 and they have not rolled 1000 points they must roll again
+	if score < 1000 {
+		if points < 1000 {
+			farkle = false
+			return farkle
+		}
+	}
+
+	// Ask if player wants to keep points and end turn
+	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", points, MaxDice-numDice)
+	choice := ConvertBinaryChoice(GetBinaryChoice())
+
+	// If player chooses to roll
+	if choice == false {
+		farkle = false
+	}
+
+	// Add points to score
+	player.AddScore(points)
+
+	return farkle
+}
+
+func PlayRound() {
 
 }
