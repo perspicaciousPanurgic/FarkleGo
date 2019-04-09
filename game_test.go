@@ -53,26 +53,74 @@ func TestNamePlayer(t *testing.T) {
 
 func TestFindPoints(t *testing.T) {
 	pointsValidTests := []struct {
-		dice [6]int
-		want int
+		dice    [6]int
+		points  int
+		numDice int
 	}{
-		{[6]int{1, 2, 5, 2, 3, 4}, 150},
-		{[6]int{1, 1, 1, 2, 3, 4}, 1000},
-		{[6]int{1, 1, 1, 1, 3, 4}, 1100},
-		{[6]int{1, 1, 1, 1, 1, 1}, 2000},
-		{[6]int{5, 2, 3, 4, 6, 6}, 50},
-		{[6]int{5, 5, 5, 4, 6, 6}, 500},
-		{[6]int{5, 5, 5, 5, 5, 5}, 1000},
-		{[6]int{2, 2, 2, 3, 3, 4}, 200},
-		{[6]int{2, 2, 2, 3, 3, 3}, 500},
-		{[6]int{4, 4, 4, 6, 6, 6}, 1000},
-		{[6]int{2, 2, 2, 2, 2, 2}, 400},
+		{[6]int{1, 2, 5, 2, 3, 4}, 150, 2},
+		{[6]int{1, 1, 1, 2, 3, 4}, 1000, 3},
+		{[6]int{1, 1, 1, 1, 3, 4}, 1100, 4},
+		{[6]int{1, 1, 1, 1, 1, 1}, 2000, 6},
+		{[6]int{5, 2, 3, 4, 6, 6}, 50, 1},
+		{[6]int{5, 5, 5, 4, 6, 6}, 500, 3},
+		{[6]int{5, 5, 5, 5, 5, 5}, 1000, 6},
+		{[6]int{2, 2, 2, 3, 3, 4}, 200, 3},
+		{[6]int{2, 2, 2, 3, 3, 3}, 500, 6},
+		{[6]int{4, 4, 4, 6, 6, 6}, 1000, 6},
+		{[6]int{2, 2, 2, 2, 2, 2}, 400, 6},
 	}
 
 	for _, tt := range pointsValidTests {
 		got := FindPoints(tt.dice)
+		if got.points != tt.points {
+			t.Errorf("Points: got %d want %d given %v", got.points, tt.points, tt.dice)
+		}
+		if got.numDice != tt.numDice {
+			t.Errorf("numDice: got %d want %d given %v", got.numDice, tt.numDice, tt.dice)
+		}
+	}
+}
+
+func TestKeepPoints(t *testing.T) {
+	keepPointsTests := []struct {
+		points int
+		want   int
+	}{
+		{100, 100},
+		{100, 200},
+		{1000, 1200},
+	}
+
+	player := Player{1, "Adam", 0}
+
+	for _, tt := range keepPointsTests {
+		KeepPoints(tt.points, &player)
+		got := player.score
 		if got != tt.want {
-			t.Errorf("got %d want %d given %v", got, tt.want, tt.dice)
+			t.Errorf("got %d want %d", got, tt.want)
+		}
+	}
+}
+
+func TestEndRound(t *testing.T) {
+	roundTest := []struct {
+		points  int
+		numDice int
+		score   int
+		farkle  bool
+	}{
+		{0, 0, 0, true},
+		{200, 2, 0, false},
+		{800, 4, 0, false},
+		{0, 2, 1000, true},
+		{1000, 2, 0, false},
+		{0, 6, 0, true},
+	}
+
+	for _, tt := range roundTest {
+		farkle := EndRound(tt.points, tt.numDice, tt.score)
+		if farkle != tt.farkle {
+			t.Errorf("got %t want %t given %d points, %d dice used and %d score", farkle, tt.farkle, tt.points, tt.numDice, tt.score)
 		}
 	}
 }

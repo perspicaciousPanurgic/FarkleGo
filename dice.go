@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+// Struct to hold roll information for FindPoints()
+type rollResult struct {
+	points  int
+	numDice int
+}
+
 //Roll to generate random numbers between 1-6
 func Roll(dice [6]int, numDice int) [6]int {
 

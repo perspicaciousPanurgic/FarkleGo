@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 )
 
+//Global constants
+const MaxDice = 6
+const PointsToWin = 2000
+
 func Greetings() string {
 	return "Let's Play Farkle!"
 }
@@ -53,22 +57,27 @@ func main() {
 		NamePlayer(i, name, playerList)
 	}
 
+	// Initialize Dice Array & eligible dice to roll
+	activeDice := [6]int{}
+	numDice := MaxDice
+
 	// State who is the active player
 	activePlayer = NextActivePlayer(activePlayer, numPlayers)
 	fmt.Printf("\nThe active player is Player %d : %v\n", activePlayer+1, playerList[activePlayer].name)
 
-	// Initialize Dice Arrays
-	activeDice := [6]int{}
-	heldDice := [6]int{}
-
 	// Roll Dice
-	activeDice = Roll(activeDice, 6)
+	activeDice = Roll(activeDice, numDice)
 
 	// Print Dice
 	PrintActiveDice(activeDice)
-	PrintHeldDice(heldDice)
 
 	// Find points
-	points := FindPoints(activeDice)
-	fmt.Printf("The dice roll is worth %d points.", points)
+	result := FindPoints(activeDice)
+
+	// Add to active player's score
+	playerList[activePlayer].AddScore(result.points)
+
+	// Print results
+	fmt.Printf("%v now has %d points.", playerList[activePlayer].name, playerList[activePlayer].score)
+	fmt.Printf("%d dice may be rolled again.", MaxDice-result.numDice)
 }
