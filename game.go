@@ -60,9 +60,15 @@ func NextActivePlayer(currentPlayer int, numPlayers int) int {
 	return next
 }
 
-// Method to execute the effects of a player choosing to hold point scoring dice
-func KeepPoints(points int, player *Player) {
-	player.AddScore(points)
+// Method to determine number of dice to roll next round
+func DiceLeft(startDice int, usedDice int) int {
+	// Remaining dice to roll is the dice that the round started with minus dice held for points
+	dice := startDice - usedDice
+	// If all the dice from round start are held then the player gets to roll 6 dice again
+	if dice == 0 {
+		dice = 6
+	}
+	return dice
 }
 
 // Method to evaluate dice rolled for points. Returns points kept by player and numDice used
@@ -201,10 +207,10 @@ func NamePlayer(index int, name string, playerList []Player) {
 func SetupGame(numPlayers int) []Player {
 	// Initialize array of players
 	playerList := []Player{
-		Player{1, "Adam", 0},
-		Player{2, "Bob", 0},
-		Player{3, "Chris", 0},
-		Player{4, "Dave", 0},
+		Player{1, "Adam", 0, 0},
+		Player{2, "Bob", 0, 0},
+		Player{3, "Chris", 0, 0},
+		Player{4, "Dave", 0, 0},
 	}
 
 	// name the players
@@ -256,9 +262,7 @@ func PlayGame() {
 		farkle = EndRound(result.points, result.numDice, playerList[activePlayer].score, &playerList[activePlayer])
 
 		// Determine dice to roll
-		if result.numDice != 6 {
-			numDice = numDice - result.numDice
-		}
+		numDice = DiceLeft(numDice, result.numDice)
 	}
 }
 
@@ -268,11 +272,15 @@ func EndRound(points int, numDice int, score int, player *Player) bool {
 
 	// If no points were rolled then the round is over
 	if points == 0 {
+		// Reset player point count to 0
+		player.ResetPoints()
 		return farkle
 	}
 
 	// If all six dice have scored points then player must roll again
 	if numDice == 6 {
+		// Store points for next round
+		player.AddPoints(points)
 		farkle = false
 		return farkle
 	}
@@ -280,22 +288,30 @@ func EndRound(points int, numDice int, score int, player *Player) bool {
 	// If player score is less than 1000 and they have not rolled 1000 points they must roll again
 	if score < 1000 {
 		if points < 1000 {
+			// Store points for next round
+			player.AddPoints(points)
 			farkle = false
 			return farkle
 		}
 	}
 
 	// Ask if player wants to keep points and end turn
-	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", points, MaxDice-numDice)
+	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", player.points, MaxDice-numDice)
 	choice := ConvertBinaryChoice(GetBinaryChoice())
 
 	// If player chooses to roll
 	if choice == false {
+		// Store held points for next round
+		player.AddPoints(points)
 		farkle = false
 	}
 
-	// Add points to score
-	player.AddScore(points)
+	// Add points to player points
+	player.AddPoints(points)
+	// Add player points to player score
+	player.AddScore()
+	// Reset player points to 0
+	player.ResetPoints()
 
 	return farkle
 }
