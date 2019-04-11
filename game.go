@@ -5,8 +5,8 @@ import (
 )
 
 //Global constants
-const MaxDice = 6
-const PointsToWin = 2000
+const MaxDice int = 6
+const PointsToWin int = 10000
 
 // Method to solicit Y or N from user
 func GetBinaryChoice() string {
@@ -327,7 +327,7 @@ func EndRound(points int, keptDice int, numDice int, player *Player) bool {
 		println("\nAll dice have scored points. Roll again!")
 		// Store points for next round
 		player.AddPoints(points)
-		fmt.Printf("\n%v now has %d points.", player.name, player.points)
+		fmt.Printf("\n%v now has %d points.\n", player.name, player.points)
 		farkle = false
 		return farkle
 	}

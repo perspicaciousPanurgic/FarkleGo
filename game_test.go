@@ -53,9 +53,9 @@ func TestNamePlayer(t *testing.T) {
 
 func TestFindPoints(t *testing.T) {
 	pointsValidTests := []struct {
-		dice    [6]int
-		points  int
-		numDice int
+		dice     [6]int
+		points   int
+		keptDice int
 	}{
 		{[6]int{1, 2, 5, 2, 3, 4}, 150, 2},
 		{[6]int{1, 1, 1, 2, 3, 4}, 1000, 3},
@@ -71,43 +71,12 @@ func TestFindPoints(t *testing.T) {
 	}
 
 	for _, tt := range pointsValidTests {
-		got := FindPoints(tt.dice)
+		got := FindPoints(&tt.dice)
 		if got.points != tt.points {
 			t.Errorf("Points: got %d want %d given %v", got.points, tt.points, tt.dice)
 		}
-		if got.numDice != tt.numDice {
-			t.Errorf("numDice: got %d want %d given %v", got.numDice, tt.numDice, tt.dice)
-		}
-	}
-}
-
-func TestEndRound(t *testing.T) {
-	testPlayer := Player{1, "Tom", 0}
-
-	roundTest := []struct {
-		points  int
-		numDice int
-		score   int
-		farkle  bool
-		player  *Player
-	}{
-		{0, 0, 0, true, &testPlayer},
-		{200, 2, 0, false, &testPlayer},
-		{800, 4, 0, false, &testPlayer},
-		{0, 2, 1000, true, &testPlayer},
-		{800, 2, 0, false, &testPlayer},
-		{1000, 2, 0, true, &testPlayer},
-		{1000, 6, 0, false, &testPlayer},
-		{400, 3, 1000, true, &testPlayer},
-		{400, 6, 1000, false, &testPlayer},
-		{0, 6, 0, true, &testPlayer},
-		{100, 6, 0, false, &testPlayer},
-	}
-
-	for _, tt := range roundTest {
-		farkle := EndRound(tt.points, tt.numDice, tt.score, tt.player)
-		if farkle != tt.farkle {
-			t.Errorf("got %t want %t given %d points, %d dice used and %d score", farkle, tt.farkle, tt.points, tt.numDice, tt.score)
+		if got.keptDice != tt.keptDice {
+			t.Errorf("numDice: got %d want %d given %v", got.keptDice, tt.keptDice, tt.dice)
 		}
 	}
 }
@@ -125,7 +94,7 @@ func TestDiceLeft(t *testing.T) {
 	}
 
 	for _, tt := range diceTests {
-		got := DiceLeft(tt.startDice, tt.usedDice)
+		got := DiceLeft(&tt.startDice, tt.usedDice)
 		if got != tt.want {
 			t.Errorf("have %d want %d", got, tt.want)
 		}

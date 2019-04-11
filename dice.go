@@ -52,6 +52,19 @@ func CountDice(dice *[6]int) [6]int {
 	return count
 }
 
+// Method to print the dice roll
 func PrintActiveDice(dice *[6]int) {
-	fmt.Printf("\nDice Roll : %v\n", dice)
+	// Wait for 1 second
+	slowDown(seconds)
+	// Print dice array
+	fmt.Print("\nDice Roll : ")
+	for i := 0; i < len(dice); i++ {
+		fmt.Printf("%d ", dice[i])
+	}
+	fmt.Println("")
+}
+
+// Method to delay execution. Used to make the terminal return easier to read.
+func slowDown(seconds int) {
+	time.Sleep(time.Duration(seconds) * time.Second)
 }

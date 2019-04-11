@@ -4,7 +4,7 @@ import "testing"
 
 func TestChangeName(t *testing.T) {
 	// Initialize player
-	playerOne := Player{0, "Tom", 0}
+	playerOne := Player{0, "Tom", 0, 0}
 
 	// Change player name
 	newName := "Bilbo"
@@ -20,11 +20,12 @@ func TestChangeName(t *testing.T) {
 
 func TestAddScore(t *testing.T) {
 	// Initialize player
-	playerOne := Player{0, "Tom", 0}
+	playerOne := Player{0, "Tom", 0, 0}
 
 	// Add score
 	points := 100
-	playerOne.AddScore(100)
+	playerOne.AddPoints(points)
+	playerOne.AddScore()
 
 	got := playerOne.score
 	want := points

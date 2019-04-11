@@ -11,7 +11,7 @@ func TestRoll(t *testing.T) {
 
 	t.Run("length", func(t *testing.T) {
 		// populate with random number between 1 & 6 to simulate dice roll
-		newDice := Roll(dice, numDice)
+		newDice := Roll(&dice, &numDice)
 
 		// test if diceRoll[0] is between 1 & 6
 		got := len(newDice)
@@ -24,7 +24,7 @@ func TestRoll(t *testing.T) {
 
 	t.Run("values", func(t *testing.T) {
 		// populate with random number between 1 & 6 to simulate dice roll
-		newDice := Roll(dice, numDice)
+		newDice := Roll(&dice, &numDice)
 
 		// test if diceRoll[0] is between 1 & 6
 		got := newDice[0]
@@ -58,7 +58,7 @@ func TestCountDice(t *testing.T) {
 	}
 
 	for _, tt := range isCountValid {
-		got := CountDice(tt.dice)
+		got := CountDice(&tt.dice)
 		if got != tt.count {
 			t.Errorf("got %v want %v given %v", got, tt.count, tt.dice)
 		}

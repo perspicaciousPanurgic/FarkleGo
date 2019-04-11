@@ -6,6 +6,9 @@ import (
 	"io/ioutil"
 )
 
+// Global constants
+const seconds int = 1
+
 func Greetings() string {
 	return "Let's Play Farkle!"
 }
