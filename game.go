@@ -61,9 +61,9 @@ func NextActivePlayer(currentPlayer int, numPlayers int) int {
 }
 
 // Method to determine number of dice to roll next round
-func DiceLeft(startDice int, usedDice int) int {
+func DiceLeft(startDice *int, usedDice int) int {
 	// Remaining dice to roll is the dice that the round started with minus dice held for points
-	dice := startDice - usedDice
+	dice := *startDice - usedDice
 	// If all the dice from round start are held then the player gets to roll 6 dice again
 	if dice == 0 {
 		dice = 6
@@ -73,7 +73,7 @@ func DiceLeft(startDice int, usedDice int) int {
 
 // Method to evaluate dice rolled for points. Returns points kept by player and numDice used
 // in a rollResult struct
-func FindPoints(dice [6]int) rollResult {
+func FindPoints(dice *[6]int) rollResult {
 
 	// Initialize return values
 	points := 0
@@ -245,77 +245,80 @@ func PlayGame() {
 	// Round loop
 	farkle := false
 	for farkle == false {
-		// Roll Dice
-		activeDice = Roll(activeDice, numDice)
-
-		// Print Dice
-		PrintActiveDice(activeDice)
-
-		// Find points
-		result := FindPoints(activeDice)
-
-		// Print results
-		//fmt.Printf("%v now has %d points.", playerList[activePlayer].name, playerList[activePlayer].score)
-		//fmt.Printf("%d dice may be rolled again.", MaxDice-result.numDice)
-
-		// End of round evaluation to determine if round is over
-		farkle = EndRound(result.points, result.numDice, playerList[activePlayer].score, &playerList[activePlayer])
-
-		// Determine dice to roll
-		numDice = DiceLeft(numDice, result.numDice)
+		farkle = PlayRound(&activeDice, &numDice, &playerList[activePlayer])
 	}
 }
 
 // Method to determine if a players turn is over
-func EndRound(points int, numDice int, score int, player *Player) bool {
+func EndRound(points int, keptDice int, numDice int, player *Player) bool {
 	farkle := true
 
 	// If no points were rolled then the round is over
 	if points == 0 {
+		println("Farkle! Your turn is over.")
 		// Reset player point count to 0
 		player.ResetPoints()
 		return farkle
 	}
 
-	// If all six dice have scored points then player must roll again
-	if numDice == 6 {
+	// If all dice rolled have scored points then player must roll again
+	if keptDice == numDice {
+		println("All dice have scored points. Roll again!")
 		// Store points for next round
 		player.AddPoints(points)
+		fmt.Printf("%v's points is now %d.", player.name, player.points)
 		farkle = false
 		return farkle
 	}
 
+	// Store points for next round
+	player.AddPoints(points)
+	fmt.Printf("%v's points is now %d.", player.name, player.points)
+
 	// If player score is less than 1000 and they have not rolled 1000 points they must roll again
-	if score < 1000 {
-		if points < 1000 {
+	if player.score < 1000 {
+		if player.points < 1000 {
 			// Store points for next round
-			player.AddPoints(points)
+			println("You do not have 1000 points yet. Roll again!")
 			farkle = false
 			return farkle
 		}
 	}
 
 	// Ask if player wants to keep points and end turn
-	fmt.Printf("Do you want to keep %d points or roll %d dice?\n", player.points, MaxDice-numDice)
+	fmt.Printf("Do you want to end your turn and keep %d points? If not you may roll %d dice.\n", player.points, MaxDice-numDice)
 	choice := ConvertBinaryChoice(GetBinaryChoice())
 
 	// If player chooses to roll
 	if choice == false {
-		// Store held points for next round
-		player.AddPoints(points)
 		farkle = false
+		return farkle
 	}
 
-	// Add points to player points
-	player.AddPoints(points)
 	// Add player points to player score
 	player.AddScore()
+	fmt.Printf("%v's score is now %d.", player.name, player.score)
 	// Reset player points to 0
 	player.ResetPoints()
 
 	return farkle
 }
 
-func PlayRound() {
+func PlayRound(activeDice *[6]int, numDice *int, player *Player) bool {
+	// Roll Dice
+	activeDice = Roll(activeDice, numDice)
 
+	// Print Dice
+	PrintActiveDice(activeDice)
+
+	// Find points
+	result := FindPoints(activeDice)
+
+	// End of round evaluation to determine if round is over
+	farkle := EndRound(result.points, result.keptDice, *numDice, player)
+
+	// Determine dice to roll
+	*numDice = DiceLeft(numDice, result.keptDice)
+
+	return farkle
 }
